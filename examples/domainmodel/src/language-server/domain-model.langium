@@ -18,13 +18,13 @@ PackageDeclaration:
 AbstractElement:
     PackageDeclaration | Type | Import;
  
-QualifiedName:
+QualifiedName returns string:
     ID ('.' ID)*;
  
 Import:
     'import' importedNamespace=QualifiedNameWithWildcard;
  
-QualifiedNameWithWildcard:
+QualifiedNameWithWildcard returns string:
     QualifiedName '.*'?;
  
 Type:

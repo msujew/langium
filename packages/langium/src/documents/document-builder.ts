@@ -34,6 +34,7 @@ export class DefaultDocumentBuilder implements DocumentBuilder {
         document.precomputedScopes = this.scopeComputation.computeScope(parseResult.value);
         const processed = document as ProcessedLangiumDocument;
         const diagnostics = this.documentValidator.validateDocument(processed);
+        processed.diagnostics = diagnostics;
 
         if (this.connection) {
             // Send the computed diagnostics to VS Code.

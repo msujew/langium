@@ -12,6 +12,7 @@ import { generateGrammarAccess } from './generator/grammar-access-generator';
 import { generateParser } from './generator/parser-generator';
 import { generateAst } from './generator/ast-generator';
 import { generateModule } from './generator/module-generator';
+import { exit } from 'process';
 
 const program = new Command();
 program
@@ -34,6 +35,13 @@ const grammarFile = pack.langium.grammar ?? 'src/grammar.langium';
 const grammarFileContent = fs.readFileSync(grammarFile).toString();
 const document = LangiumDocumentConfiguration.create(`file:${grammarFile}`, 'langium', 0, grammarFileContent);
 const processedDocument = services.documents.DocumentBuilder.build(document);
+if (processedDocument.diagnostics.some(e => e.severity === 1)) {
+    console.error('The specified grammar contains validation errors.');
+    for (const diag of processedDocument.diagnostics) {
+        console.error(diag.message);
+    }
+    exit(1);
+}
 const grammar = processedDocument.parseResult.value as Grammar;
 document.precomputedScopes = services.references.ScopeComputation.computeScope(grammar);
 resolveAllReferences(grammar);
