@@ -19,7 +19,7 @@ export function generateGrammarAccess(grammar: langium.Grammar, config: LangiumC
     } else {
         node.children.push(`import { ${imports}, GrammarAccess } from 'langium';`);
     }
-    node.children.push(NL, "import * as path from 'path';", NL, NL);
+    node.children.push(NL, "import grammar from './grammar';", NL, NL);
 
     for (const rule of stream(grammar.rules).filterType(langium.isParserRule)) {
         node.children.push(generateRuleAccess(rule), NL, NL);
@@ -38,7 +38,7 @@ export function generateGrammarAccess(grammar: langium.Grammar, config: LangiumC
     }
 
     const constructorNode = new IndentNode();
-    constructorNode.children.push("super(path.join(__dirname, 'grammar.json'));");
+    constructorNode.children.push('super(grammar());');
     content.children.push(NL, 'constructor() {', NL, constructorNode, NL, '}', NL);
     node.children.push(content, '}', NL);
 
